@@ -76,6 +76,8 @@ async function run()
 
         app.post('/items',async(req,res)=>{
             const newItem=req.body;
+            console.log('added new item',newItem);
+            const result=await itemsCollection.insertOne(newItem);
 
         })
 
