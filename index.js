@@ -72,6 +72,18 @@ async function run()
         })
 
 
+        //create items
+
+        app.post('/items',async(req,res)=>{
+            const newItem=req.body;
+
+        })
+
+
+
+
+
+
 
 
 
