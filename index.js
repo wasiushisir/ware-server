@@ -22,9 +22,24 @@ async function run()
     try{
         await client.connect();
         const itemsCollection=client.db('frTelecom').collection('items')
+        const addItemsCollection=client.db('frTelecom').collection('addItems')
+
+
+        // app.get('/items',async(req,res)=>{
+            
+        //     const query={};
+        //     const cursor=itemsCollection.find(query);
+        //     const items=await cursor.toArray()
+        //     res.send(items);
+
+
+        // })
+
 
         app.get('/items',async(req,res)=>{
-            const query={};
+            const email=req.query.email;
+            // console.log(email);
+            const query={email:email};
             const cursor=itemsCollection.find(query);
             const items=await cursor.toArray()
             res.send(items);
@@ -43,9 +58,25 @@ async function run()
 
         })
 
+        app.get('/additems/:id',async(req,res)=>{
+
+            const id=req.params.id;
+            const query={_id:ObjectId(id)};
+            const item=await addItemsCollection.findOne(query);
+            res.send(item);
+
+        })
+
+
+
+
+
+
+
+
 
           //update user
-          app.put('/items/:id',async(req,res)=>{
+          app.put('/additems/:id',async(req,res)=>{
             const id =req.params.id;
             const updatedQuantity=req.body;
             const filter={_id: ObjectId(id)}
@@ -57,7 +88,7 @@ async function run()
                    
                 }
             };
-            const result= await itemsCollection.updateOne(filter,updateDoc,options);
+            const result= await addItemsCollection.updateOne(filter,updateDoc,options);
             res.send(result);
         })   
 
@@ -82,6 +113,50 @@ async function run()
 
         })
 
+
+
+
+
+        app.post('/additems',async(req,res)=>{
+            const newItem=req.body;
+            console.log('added new item',newItem);
+            const result=await addItemsCollection.insertOne(newItem);
+            res.send(result);
+
+        })
+
+
+        app.get('/additems',async(req,res)=>{
+            const query={}
+            const cursor= addItemsCollection.find(query)
+            const result=await cursor.toArray();
+            res.send(result);
+        })
+
+
+        //delete
+
+
+        app.delete('/additems/:id',async(req,res)=>{
+            const id=req.params.id;
+            const query={_id:ObjectId(id)}
+            const result=await addItemsCollection.deleteOne(query)
+            res.send(result) 
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+     
 
 
 
