@@ -169,6 +169,18 @@ async function run()
 
 
 
+        //feedback
+
+        app.get('/feedback',async(req,res)=>{
+            const query={}
+            const cursor= addFeedBackCollection.find(query)
+            const result=await cursor.toArray();
+            res.send(result);
+
+        })
+
+
+
 
 
 
