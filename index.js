@@ -1,4 +1,5 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
@@ -9,6 +10,16 @@ const port=process.env.PORT || 5000;
 //middleware
 app.use(cors());
 app.use(express.json());
+
+function verifyJWT(req,res,next){
+    const authHeader=req.headers.authorization;
+    if(!authHeader){
+       return res.status(401).send({message:'unauthorized access'})
+    }
+            console.log('below the middleware',authHeader);
+            next();
+
+}
 
 
 
@@ -23,20 +34,32 @@ async function run()
         await client.connect();
         const itemsCollection=client.db('frTelecom').collection('items')
         const addItemsCollection=client.db('frTelecom').collection('addItems')
+        const addFeedBackCollection=client.db('frTelecom').collection('feedback')
 
 
-        // app.get('/items',async(req,res)=>{
+         //AUTH
+
+         app.post('/login',async(req,res)=>
+        
+        {
+            const user=req.body;
+            const accessToken=jwt.sign(user,process.env.ACCESS_TOKEN_SECRETE,{
+                expiresIn:'1d'
+            });
+
+            res.send(accessToken);
+
+        })
+
+
+      
+
+
+        app.get('/items',verifyJWT,async(req,res)=>{
             
-        //     const query={};
-        //     const cursor=itemsCollection.find(query);
-        //     const items=await cursor.toArray()
-        //     res.send(items);
 
 
-        // })
 
-
-        app.get('/items',async(req,res)=>{
             const email=req.query.email;
             // console.log(email);
             const query={email:email};
