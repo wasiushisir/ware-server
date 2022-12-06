@@ -228,5 +228,5 @@ app.get('/',async(req,res)=>{
 
 app.listen(port,()=>
 {
-    console.log(port,' port iss litening')
+    console.log(port,' port of litening')
 })
